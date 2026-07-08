@@ -1,5 +1,12 @@
+"use client"
+
+import { useState } from "react"
+
 export default function Home() {
-  const spots = [
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [name, setName] = useState("")
+  const [location, setLocation] = useState("")
+  const [spots, setSpots] = useState([
     {
       id: 1,
       name: "ブーランジェリー○○",
@@ -7,7 +14,6 @@ export default function Home() {
       emoji: "🍞",
       location: "東京都渋谷区",
       memo: "クロワッサンが絶品。トイレあり・清潔✅",
-      color: "orange"
     },
     {
       id: 2,
@@ -16,7 +22,6 @@ export default function Home() {
       emoji: "♨️",
       location: "神奈川県箱根町",
       memo: "露天風呂が最高。トイレ綺麗✅",
-      color: "blue"
     },
     {
       id: 3,
@@ -25,10 +30,25 @@ export default function Home() {
       emoji: "🔥",
       location: "千葉県富津市",
       memo: "海が見えて最高。トイレ普通",
-      color: "green"
     },
-  ]
-
+  ])
+  const handleAddSpot = () => {
+    if (name === "") return
+    setSpots([
+      ...spots,
+      {
+        id: spots.length + 1,
+        name: name,
+        category: "その他",
+        emoji: "📍",
+        location: location,
+        memo: "",
+      },
+    ])
+    setName("")
+    setLocation("")
+    setIsFormOpen(false)
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -44,10 +64,49 @@ export default function Home() {
           <h2 className="text-lg font-semibold text-gray-700">
             記録したスポット
           </h2>
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium"
+          >
             ＋ 追加
           </button>
         </div>
+
+        {isFormOpen && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm mb-4">
+            <h3 className="font-semibold text-gray-800 mb-3">
+              新しいスポットを追加
+            </h3>
+            <input
+              type="text"
+              placeholder="スポット名"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mb-2"
+            />
+            <input
+              type="text"
+              placeholder="場所"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mb-2"
+            />
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={handleAddSpot}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm flex-1"
+              >
+                追加する
+              </button>
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="bg-gray-100 text-gray-600 px-4 py-2 rounded-lg text-sm"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="space-y-4">
           {spots.map((spot) => (
