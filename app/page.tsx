@@ -4,8 +4,9 @@ import { useState } from "react"
 
 export default function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false)
-
-  const spots = [
+  const [name, setName] = useState("")
+  const [location, setLocation] = useState("")
+  const [spots, setSpots] = useState([
     {
       id: 1,
       name: "ブーランジェリー○○",
@@ -30,8 +31,24 @@ export default function Home() {
       location: "千葉県富津市",
       memo: "海が見えて最高。トイレ普通",
     },
-  ]
-
+  ])
+  const handleAddSpot = () => {
+    if (name === "") return
+    setSpots([
+      ...spots,
+      {
+        id: spots.length + 1,
+        name: name,
+        category: "その他",
+        emoji: "📍",
+        location: location,
+        memo: "",
+      },
+    ])
+    setName("")
+    setLocation("")
+    setIsFormOpen(false)
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -63,15 +80,22 @@ export default function Home() {
             <input
               type="text"
               placeholder="スポット名"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mb-2"
             />
             <input
               type="text"
               placeholder="場所"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm mb-2"
             />
             <div className="flex gap-2 mt-3">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm flex-1">
+              <button
+                onClick={handleAddSpot}
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm flex-1"
+              >
                 追加する
               </button>
               <button
