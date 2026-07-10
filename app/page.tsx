@@ -1,53 +1,51 @@
 "use client"
 
-import { useState } from "react"
+import { useState , useEffect} from "react"
+import { supabase } from "@/lib/supabase"
 
 export default function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [name, setName] = useState("")
   const [location, setLocation] = useState("")
-  const [spots, setSpots] = useState([
-    {
-      id: 1,
-      name: "ブーランジェリー○○",
-      category: "パン屋",
-      emoji: "🍞",
-      location: "東京都渋谷区",
-      memo: "クロワッサンが絶品。トイレあり・清潔✅",
-    },
-    {
-      id: 2,
-      name: "○○温泉",
-      category: "温泉",
-      emoji: "♨️",
-      location: "神奈川県箱根町",
-      memo: "露天風呂が最高。トイレ綺麗✅",
-    },
-    {
-      id: 3,
-      name: "○○BBQ場",
-      category: "BBQ",
-      emoji: "🔥",
-      location: "千葉県富津市",
-      memo: "海が見えて最高。トイレ普通",
-    },
-  ])
-  const handleAddSpot = () => {
+  const [spots, setSpots] = useState<any[]>([])
+
+  useEffect(() => {
+    fetchSpots()
+  }, [])
+
+  const fetchSpots = async () => {
+    const { data, error } = await supabase
+      .from("spots")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    setSpots(data)
+  }
+  const handleAddSpot = async () => {
     if (name === "") return
-    setSpots([
-      ...spots,
-      {
-        id: spots.length + 1,
-        name: name,
-        category: "その他",
-        emoji: "📍",
-        location: location,
-        memo: "",
-      },
-    ])
+
+    const { error } = await supabase.from("spots").insert({
+      name: name,
+      category: "その他",
+      emoji: "📍",
+      location: location,
+      memo: "",
+    })
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
     setName("")
     setLocation("")
     setIsFormOpen(false)
+    fetchSpots()
   }
   return (
     <div className="min-h-screen bg-gray-50">
