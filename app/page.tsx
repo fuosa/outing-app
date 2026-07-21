@@ -56,6 +56,20 @@ export default function Home() {
     setIsFormOpen(false)
     fetchSpots()
   }
+  const handleDeleteSpot = async (id: number) => {
+    const confirmed = window.confirm("このスポットを削除しますか？")
+    if (!confirmed) return
+
+    const { error } = await supabase.from("spots").delete().eq("id", id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    fetchSpots()
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm">
@@ -142,7 +156,25 @@ export default function Home() {
                     {spot.location}
                   </p>
                 </div>
-                <span className="text-2xl">⭐️</span>
+                <button
+                  onClick={() => handleDeleteSpot(spot.id)}
+                  className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-2 rounded-full transition-colors"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M3 6h18" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <line x1="10" y1="11" x2="10" y2="17" />
+                    <line x1="14" y1="11" x2="14" y2="17" />
+                  </svg>
+                </button>
               </div>
               <p className="text-sm text-gray-600 mt-3">
                 {spot.memo}
