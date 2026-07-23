@@ -36,6 +36,14 @@ export default function Home() {
     "離島": "🏝️",
     "その他": "📍",
   }
+  const categoryColors: { [key: string]: string } = {
+    "パン屋": "bg-orange-100 text-orange-600",
+    "温泉": "bg-blue-100 text-blue-600",
+    "BBQ": "bg-red-100 text-red-600",
+    "グルメ": "bg-yellow-100 text-yellow-600",
+    "離島": "bg-teal-100 text-teal-600",
+    "その他": "bg-gray-100 text-gray-600",
+  }
   const handleAddSpot = async () => {
     if (name === "") return
 
@@ -238,7 +246,7 @@ export default function Home() {
                 <div className="bg-white rounded-2xl p-4 shadow-sm">
                   <div className="flex justify-between items-start">
                     <div>
-                      <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                      <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[spot.category]}`}>
                         {spot.emoji} {spot.category}
                       </span>
                       <h3 className="font-semibold text-gray-800 mt-2">
