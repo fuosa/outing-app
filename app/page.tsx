@@ -53,6 +53,7 @@ export default function Home() {
       emoji: categoryEmojis[category],
       location: location,
       memo: "",
+      rating: 0,
     })
 
     if (error) {
@@ -70,6 +71,19 @@ export default function Home() {
     if (!confirmed) return
 
     const { error } = await supabase.from("spots").delete().eq("id", id)
+
+    if (error) {
+      console.error(error)
+      return
+    }
+
+    fetchSpots()
+  }
+  const handleRating = async (id: number, rating: number) => {
+    const { error } = await supabase
+      .from("spots")
+      .update({ rating: rating })
+      .eq("id", id)
 
     if (error) {
       console.error(error)
@@ -282,6 +296,17 @@ export default function Home() {
                   <p className="text-sm text-gray-600 mt-3">
                     {spot.memo}
                   </p>
+                  <div className="flex gap-1 mt-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => handleRating(spot.id, star)}
+                        className="text-lg"
+                      >
+                        {star <= (spot.rating || 0) ? "⭐️" : "☆"}
+                      </button>
+                    ))}
+                  </div>          
                 </div>
               )}
             </div>
